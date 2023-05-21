@@ -220,6 +220,25 @@ public class Avion {
         double totalRecaudado = valorCompra + dineroRecaudadoAlimentos;
         return totalRecaudado;
     }
+    
+    public void imprimirEstadoSillas() {
+    int sillasLibres = 0;
+    int sillasOcupadas = 0;
+    
+    for (int i = 0; i < filas; i++) {
+        for (int j = 0; j < columnas; j++) {
+            if (sillas[i][j].equals("Disponible")) {
+                sillasLibres++;
+            } else if (sillas[i][j].equals("Ocupada")) {
+                sillasOcupadas++;
+            }
+        }
+    }
+    
+    System.out.println("Sillas libres: " + sillasLibres);
+    System.out.println("Sillas ocupadas: " + sillasOcupadas);
+}
+
 
 
 
