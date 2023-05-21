@@ -1,15 +1,25 @@
 package uniquindio.logic;
 import java.util.*;
 public class Avion {
+	
+	/*
+	 * 
+	 *  @version 1.0
+	 *  
+	 *  @propiedad de Juan Manuel Giraldo 2023-1
+	 * 
+	 * 
+	 * */
 
     //Datos pasajeros
-
     private ArrayList<String> nombresPasajero;
     private ArrayList<String> edadesPasajero;
     private ArrayList<String> direccionesPasajero;
     private ArrayList<String> telefonosPasajero;
     private ArrayList<String> nacimientosPasajero;
     private ArrayList<String> contactosEmergenciaPasajero;
+    private ArrayList<Double> gastoTotalPasajero;
+
 
     private ArrayList<Double> compras;
 
@@ -61,6 +71,7 @@ public class Avion {
         gastoAlimentosPasajeros = new ArrayList<String>();
         dineroRecaudadoAlimentos = 0.0;
         cantidadArticulosPasajero = new ArrayList<Integer>(70);
+        gastoTotalPasajero = new ArrayList<Double>();
         for (int i = 0; i < 70; i++) {
             cantidadArticulosPasajero.add(0);
         }
@@ -222,31 +233,137 @@ public class Avion {
     }
     
     public void imprimirEstadoSillas() {
-    int sillasLibres = 0;
-    int sillasOcupadas = 0;
-    
-    for (int i = 0; i < filas; i++) {
-        for (int j = 0; j < columnas; j++) {
-            if (sillas[i][j].equals("Disponible")) {
-                sillasLibres++;
-            } else if (sillas[i][j].equals("Ocupada")) {
-                sillasOcupadas++;
+        int sillasLibres = 0;
+        int sillasOcupadas = 0;
+        
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                if (sillas[i][j].equals("Disponible")) {
+                    sillasLibres++;
+                } else if (sillas[i][j].equals("Ocupada")) {
+                    sillasOcupadas++;
+                }
             }
         }
+        
+        System.out.println("Sillas libres: " + sillasLibres);
+        System.out.println("Sillas ocupadas: " + sillasOcupadas);
     }
     
-    System.out.println("Sillas libres: " + sillasLibres);
-    System.out.println("Sillas ocupadas: " + sillasOcupadas);
+    public String obtenerPasajeroMayorCompra() {
+        int maxCompra = 0;
+        String pasajero = "";
+        
+        for (int i = 0; i < nombresPasajero.size(); i++) {
+            String compraActual = gastoAlimentosPasajeros.get(i);
+            if (Integer.parseInt(compraActual) > maxCompra) {
+                maxCompra = Integer.parseInt(compraActual);
+                pasajero = nombresPasajero.get(i);
+            }
+        }
+        
+        return pasajero;
+    }
+    
+    public String obtenerPasajeroMayorGasto() {
+        double maxGasto = 0.0;
+        String pasajero = "";
+        
+        for (int i = 0; i < nombresPasajero.size(); i++) {
+            double gastoActual = gastoTotalPasajero.get(i);
+            if (gastoActual > maxGasto) {
+                maxGasto = gastoActual;
+                pasajero = nombresPasajero.get(i);
+            }
+        }
+        
+        return pasajero;
+    }
+
+    public int obtenerCantidadMenoresEdad() {
+        int contadorMenoresEdad = 0;
+        
+        for (String edad : edadesPasajero) {
+            int edadInt = Integer.parseInt(edad);
+            if (edadInt < 18) {
+                contadorMenoresEdad++;
+            }
+        }
+        
+        return contadorMenoresEdad;
+    }
+    
+    public String generarMensajeListaProductos() {
+        ArrayList<String> listaProductos = new ArrayList<>();
+
+        listaProductos.add("Café");
+        listaProductos.add("Vino");
+        listaProductos.add("Pan");
+        listaProductos.add("Papas fritas");
+        listaProductos.add("Soda");
+
+        // Crear un comparador personalizado para ordenar en base al precio
+        Comparator<String> comparador = new Comparator<String>() {
+            @Override
+            public int compare(String producto1, String producto2) {
+                double precioProducto1 = obtenerPrecioProducto(producto1);
+                double precioProducto2 = obtenerPrecioProducto(producto2);
+                return Double.compare(precioProducto2, precioProducto1);
+            }
+        };
+
+        // Ordenar la lista de productos en base al comparador
+        Collections.sort(listaProductos, comparador);
+
+        // Generar el mensaje de la lista de productos
+        StringBuilder mensaje = new StringBuilder();
+        mensaje.append("Lista de alimentos:\n");
+        for (String producto : listaProductos) {
+            int cantidadComprada = obtenerCantidadCompradaProducto(producto);
+            mensaje.append("- ").append(producto).append(" (Comprados: ").append(cantidadComprada).append(")\n");
+        }
+
+        return mensaje.toString();
+    }
+    public double obtenerPrecioProducto(String producto) {
+        double precio = 0.0;
+
+        switch (producto) {
+        case "café":
+        	precio = 1.0;
+            break;
+        case "vino":
+        	precio = 30.0;
+            break;
+        case "desayuno":
+        	precio = 2.0;
+            break;
+        case "almuerzo":
+        	precio = 5.0;
+            break;
+        case "gaseosa":
+        	precio = 2.0;
+            break;
+        case "postre":
+        	precio = 4.0;
+            break;
+        }
+
+        return precio;
+    }
+    
+    public int obtenerCantidadCompradaProducto(String producto) {
+        int contador = 0;
+        
+        for (int i = 0; i < compras.size(); i++) {
+            Double compra = compras.get(i);
+            if (compra.equals(producto)) {
+                contador++;
+            }
+        }
+        
+        return contador;
+    }
+
+   
 }
-
-
-
-
-
-
-
-
-
-
-}
-
